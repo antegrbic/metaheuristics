@@ -1,0 +1,434 @@
+\documentclass{beamer}
+
+\usepackage{hyperref}
+
+\usepackage{array}
+\usepackage{setspace} 
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[croatian]{babel}
+\usetheme{Singapore} 
+\title[Problem upotpunjenja grafa do Hamiltonovog]{Problem upotpunjenja grafa do Hamiltonovog}
+\author{Ante Grbi\'{c}, Hermina Petric Mareti\'{c}}
+\institute{Prirodoslovno-matemati\v{c}ki fakultet - Matemati\v{c}ki odjel \\ Seminar za teorijsko ra\v{c}unarstvo}
+\date{18. ožujka, 2013.}
+
+\setstretch{1.25}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Sadr\v{z}aj}
+\begin{enumerate}
+\item Uvod
+\item Promatrane heuristike
+\item Implementacija
+\item Usporedba rezultata
+\item Zaklju\v{c}ak
+\item Literatura
+\end{enumerate}
+\end{frame}
+
+\section{Uvod}
+
+\begin{frame}{Opis problema}
+
+Neka je zadan neusmjeren, beste\v{z}inski graf $G$ = ($V$,$E$). Potrebno je dodati minimalan broj bridova $d \in \mathbb N$ grafu $G$ tako da graf postane Hamiltonov, odnosno da sadrži Hamiltonov ciklus.
+Jasno je da je ovaj problem NP-te\v{z}ak jer rješava problem traženja Hamiltonovog ciklusa.\\
+NP-potpunost problema traženja Hamiltonovog ciklusa dokazana je 1972. u $Reducibility\:Among\:Combinatorial\:Problems$, Karp. 
+
+\end{frame}
+
+
+\begin{frame}{Povijest problema i dosada\v{s}nji rezultati}
+
+\begin{itemize}
+\item Problem su neovisno predstavili Boesch, Chen i McCugh te Goodman i Hedetniemi 1970. godine. 
+\item Objavili su algoritme koji u polinomijalnom vremenu konstruiraju optimalni pokriva\v{c} jednostavnim putevima za stablo.
+\item Kundu je 1976. njihove rezultate pobolj\v{s}ao pokazav\v{s}i da se isti algoritam mo\v{z}e izvesti u linearnom vremenu.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Povijest problema i dosada\v{s}nji rezultati}
+
+2012. godine David Gamarnik i Maxim Sviridenko ra\v{c}unaju asimptotsko rje\v{s}enje problema za rijetke grafove $G$ = ($V$,$\frac{c} {n}$),  gdje je $c < 1$, a $\frac{c} {n}$ ozna\v{c}ava vjerojatnost s kojom se svaki brid mo\v{z}e pojaviti u grafu G. 
+\end{frame}
+
+\begin{frame}{Primjena problema}
+
+\begin{itemize}
+\item Dodijeljivanje frekvencija 
+\item Optimizacija programskog koda
+\item Distribuirani procesi (dodijeljivanje procesa distribuiranim procesorima)
+\end{itemize}
+
+\end{frame}
+
+\section{Promatrane heuristike}
+\begin{frame}{Algoritmi}
+
+\begin{itemize}
+\item Genetski algoritam - krizanje poretkom
+\item Genetski algoritam - pohlepno kri\v{z}anje
+\item Imunolo\v{s}ki algoritam
+\item Mravlji algoritam 
+\item Mravlji algoritam "Blizanac"
+
+\end{itemize}
+
+\end{frame}
+
+\subsection{Genetski algoritmi}
+\begin{frame}{Genetski algoritam}
+
+Reprezentacija rje\v{s}enja: permutacije \v{c}vorova bez \v{c}vora broj 1.
+Algoritam (po\v{c}inje se sa slu\v{c}ajno generiranom populacijom veli\v{c}ine $brJed$): \\
+\begin{enumerate}
+\item Ocijeni jedinke.
+\item Odaberi dvije najbolje i sa\v{c}uvaj ih u $novaPop$. Roulette wheel selekcijom odaberi $brJed - 2$ jedinki i spremi ih u $novaPop$.
+\item Metodom kri\v{z}anja poretka kri\v{z}aj odabrane jedinke.
+\item Mutacijom koja je implementirana kao implementacija inverzije mutiraj jedinke u $novaPop$.
+\item Vjerojatnost mutacije se s vremenom smanjuje.
+\item Po\v{c}etnu populaciju zamijeni s $novaPop$. Nastavi algoritam dok nije zadovoljen uvjet prekida.
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Kri\v{z}anje poretkom}
+
+\includegraphics[width = 12cm, height = 7cm]{krizanje_poretkom.jpg} \\
+\begin{center} \tiny (preuzeto iz (5)) \end{center}
+
+
+\end{frame}
+
+
+\begin{frame}{Mogu\'{c}e pobolj\v{s}anje genetskog algoritma}
+Mogu\'{c}e pobolj\v{s}anje pohlepnim operatorom kri\v{z}anja, koji se kao ideja pojavljuje u problemu trgova\v{c}kog putnika. \\
+Princip je taj da svi bridovi koji su zajedni\v{c}ki roditeljima (ciklusima)  postanu osnova njihove djece. Ostatak bridova se generira slu\v{c}ajno.
+\end{frame}
+
+\subsection{Imunološki algoritam}
+\begin{frame}{Imunološki algoritam}
+
+\begin{enumerate}
+\item Stvorimo inicijalnu populaciju antitijela veličine d.
+\item Svako antitijelo kloniramo k puta (sada imamo (k+1)*d antitijela).
+\item Svaki klon prolazi proces hipermutacije.
+\item Računamo afinitete starih antitijela i hipermutiranih klonova te gradimo novu populaciju od d najboljih.
+
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}{Hipermutacija}
+\begin{center}
+\includegraphics[scale = 0.6]{mutacija.png}
+\end{center}
+\begin{center} \tiny (preuzeto iz (5)) \end{center}
+\end{frame}
+
+\subsection{Mravlji algoritmi}
+\begin{frame}{Mravlji algoritam}
+
+\begin{enumerate}
+\item Napravimo kopiju matrice prijelaza koju \'{c}e mravi mijenjati.
+\item Svi mravi kre\'{c}u iz istog vrha i odabiru bridove s vjerojatno\v{s}\'{c}u $\frac{c_n}{\sum{c_n}}  $ ako postoje slobodni bridovi, odnosno nasumi\v{c}no dodaju novi brid ako ne postoji nastavak puta.
+\item Mravi evaluiraju svoja rje\v{s}enja i uspore\dj{}uju ih s dosad najboljim putevima.
+\item Najbolji mrav ostavlja feromone na svim ve\'{c} postoje\'{c}im bridovima (i samo njima).
+\item Trag na cijelom grafu slabi. 
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Mravlji algoritam - "blizanac"}
+
+\begin{itemize}
+\item Pohlepna modifikacija mravljeg algoritma
+\item Mravi kre\'{c}u iz vrha s najmanje susjeda
+\item Kad do\dj{}u do kraja puta, javlja se blizanac koji se nalazi na po\v{c}etku puta i nastavlja put iz po\v{c}etne to\v{c}ke
+\item Kad blizanac do\dj{}e do kraja puta, dodaje brid prema onom vrhu koji ima najmanje susjeda i postupak se nastavlja.
+ 
+\end{itemize}
+
+Blizanac opravdava pohlepnost algoritma!
+
+\end{frame}
+
+
+\begin{frame}{Dokaz (1)}
+
+Neka je $x$ = $x_{1}, x_{2},..., x_\text{n}$ jedan optimalan ciklus i $ x_\text{k} = a_{1}$ element s minimalnim brojem susjeda.
+Mrav može kopirati put $x_\text{k},...,x_\text{k+l}$ sve dok su ti bridovi postojeći u grafu. Neka je $a_{1}...a_\text{l+1}$ = $x_{k}...x_{k+l}$. Ako $a_\text{l+1}$ više nema susjeda, dolazi blizanac, a ako ima, mrav bira susjeda i opet kopira sve postojeće bridove iz $x$ u jednom smjeru. Dalje induktivno. \\
+Primijetimo da ovim postupkom nismo poremetili optimalnost ciklusa (nismo dodali nijedan brid, a razdvojenih dijelova ima manje ili jednako kao i prije).
+
+\end{frame}
+
+\begin{frame}{Dokaz (2)}
+
+Sada dolazi blizanac. On može kopirati sve postojeće i neposjećene bridove prije $x_\text{k}$, neka su to $x_\text{k-1}, ..., x_\text{k-s}$. Nakon toga ponavljamo već opisani postupak dok blizanac ne dođe do vrha bez susjeda. \\
+Mrav skače na neiskorišteni vrh s najmanjim brojem susjeda i ponavljamo gornje argumente. \\
+Poanta je u tome da ako mrav krene od "krivog" vrha ili skoči na njega, blizanac lako ispravi problem.
+
+\end{frame}
+
+\begin{frame}{Moguće poboljšanje genetskog i imunološkog algoritma}
+
+\begin{itemize}
+\item Početnu populaciju ne generiramo nasumično, već na neki educirani način
+\item Koristimo mrave kako bismo generirali početne jedinke
+\item Drastično poboljšanje, pogotovo za genetski algoritam
+ 
+\end{itemize}
+\end{frame}
+
+\section{Implementacija}
+
+\begin{frame}{Napomena}
+
+Promatramo samo grafove oblika $G$ = ($V$,$\frac{c} {n}$), gdje $\frac{c} {n}$ ozna\v{c}ava vjerojatnost s kojom se svaki brid mo\v{z}e pojaviti u grafu G po uzoru na ranije spomenuti članak autora Gamarnik, Sviridenko: $Hamiltonian\:Completions\:of\:Sparse\:Random\:Graphs$.
+
+\end{frame}
+\begin{frame}{Implementacija}
+\begin{itemize}
+\item Svi algoritmi su implementirani u MATLAB-u\\
+\item Grafovi su spremljeni pomoću matrica incidencije\\
+\item Matrice su čuvane u kompresiranom sparse formatu\\
+\item Funkcije za I/O operacije sa sparse matricama su preuzete sa \url{http://math.nist.gov/MatrixMarket/mmio/matlab/mmiomatlab.html}\\ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Korisni\v{c}ko su\v{c}elje}
+\begin{center}
+\includegraphics[scale = 0.28]{gui.png}
+\end{center}
+\end{frame}
+
+\section{Usporedba rezultata}
+\begin{frame}{Opis testiranja}
+\begin{itemize}
+\item Testiranja svih algoritama su provedena na 30 nasumično generiranih grafova od 200 vrhova i 2 nasumično generirana grafa od 1000 vrhova.
+\item Sva testiranja su provedena tri puta nad istim grafovima s jednakim parametrima te rezultati prikazuju usrednjenje.
+\item Bridovi na svim grafovima su generirani s vjerojatnošću 1/n.
+\item Posebno su provedena testiranja za Mravlji algoritam "Blizanac" na nasumično generiranim grafovima od 2000, 4000, 8000  i 10000 vrhova.
+\end{itemize}
+
+Sva testiranja obavljena su na računalu s procesorom Intel Core i5, 2,3GHz i 6GB RAM memorije.
+\end{frame}
+
+
+\begin{frame}{200 vrhova}
+\begin{center}
+\includegraphics[scale = 0.55]{par2.png}\\
+\tiny
+Elitizam: 2\\
+Trajanje izvođenja: 52.63 sekunde\\
+Najbolji rezultat: 127.667\\
+\end{center}
+\end{frame}
+
+\begin{frame}{200 vrhova}
+\begin{center}
+\includegraphics[scale = 0.55]{par4.png}\\
+\tiny
+Elitizam: 4\\
+Trajanje izvođenja: 47.5709 sekunde\\
+Najbolji rezultat: 124\\
+\end{center}
+\end{frame}
+
+
+\begin{frame}{200 vrhova}
+\begin{center}
+\includegraphics[scale = 0.55]{par6.png}\\
+\tiny
+Elitizam: 6\\
+Trajanje izvođenja: 42.68 sekunde\\
+Najbolji rezultat: 122\\
+\end{center}
+\end{frame}
+
+
+\begin{frame}{200 vrhova}
+\begin{center}
+\includegraphics[scale = 0.55]{par8.png}\\
+\tiny
+Elitizam: 8\\
+Trajanje izvođenja: 40.01 sekunde\\
+Najbolji rezultat: 122.333\\
+\end{center}
+\end{frame}
+
+%\begin{frame}{200 vrhova}
+%\begin{center}
+%\includegraphics[scale = 0.4]{Gen200.png}\\
+%Trajanje izvođenja: 52.63 sekunde\\
+%Najbolji rezultat: 125.66\\
+%\end{center}
+%\end{frame}
+
+\begin{frame}{200 vrhova}
+\begin{center}
+\includegraphics[scale = 0.4]{Im200.png}\\
+Trajanje izvođenja: 100.11 sekundi\\
+Najbolji rezultat: 118.33\\
+\end{center}
+\end{frame}
+
+\begin{frame}{200 vrhova}
+\begin{center}
+\includegraphics[scale = 0.4]{Mr200.png}\\
+Trajanje izvođenja: 24.41 sekunde\\
+Najbolji rezultat: 118\\
+\end{center}
+\end{frame}
+
+\begin{frame}{200 vrhova}
+\begin{center}
+\includegraphics[scale = 0.4]{MrBl200.png}\\
+Trajanje izvođenja: 1.17 sekundi\\
+Najbolji rezultat: 116\\
+\end{center}
+\end{frame}
+
+\begin{frame}{200 vrhova - usporedba rezultata}
+\begin{center}
+\includegraphics[scale = 0.45]{prvih10.png}\\
+\end{center}
+\end{frame}
+
+\begin{frame}{200 vrhova - usporedba rezultata}
+\begin{center}
+\includegraphics[scale = 0.45]{drugih10.png}\\
+\end{center}
+\end{frame}
+
+\begin{frame}{200 vrhova - usporedba rezultata}
+\begin{center}
+\includegraphics[scale = 0.45]{zadnjih10.png}\\
+\end{center}
+\end{frame}
+
+\begin{frame}{1000 vrhova}
+\begin{center}
+\includegraphics[scale = 0.4]{Gen1000.png}\\
+Trajanje izvođenja: 5136.6 sekundi\\
+Najbolji rezultat: 644\\
+\end{center}
+\end{frame}
+
+\begin{frame}{1000 vrhova}
+\begin{center}
+\includegraphics[scale = 0.4]{Im1000.png}\\
+Trajanje izvođenja: 3045.6 sekundi\\
+Najbolji rezultat: 590\\
+\end{center}
+\end{frame}
+
+\begin{frame}{1000 vrhova}
+\begin{center}
+\includegraphics[scale = 0.4]{Mr1000.png}\\
+Trajanje izvođenja: 2399.5 sekunde\\
+Najbolji rezultat: 611\\
+\end{center}
+\end{frame}
+
+\begin{frame}{1000 vrhova}
+\begin{center}
+\includegraphics[scale = 0.4]{MrBl1000.png}\\
+Trajanje izvođenja: 24.51 sekundi\\
+Najbolji rezultat: 582\\
+\end{center}
+\end{frame}
+
+
+\begin{frame}{1000 vrhova - usporedba rezultata}
+\begin{center}
+\includegraphics[scale = 0.45]{Zajedno1000.png}\\
+\end{center}
+\end{frame}
+
+\begin{frame}{Rezultati mravljeg algoritma "Blizanac"}
+\begin{center}
+\includegraphics[scale = 0.45]{boxplot.png}\\
+\end{center}
+\end{frame}
+
+
+\begin{frame}{2000 vrhova}
+\begin{center}
+\includegraphics[scale = 0.45]{1.png}\\
+Trajanje izvođenja: 99.7 sekundi\\
+\end{center}
+\end{frame}
+
+\begin{frame}{4000 vrhova}
+\begin{center}
+\includegraphics[scale = 0.45]{2.png}\\
+Trajanje izvođenja: 567.4 sekundi\\
+\end{center}
+\end{frame}
+
+\begin{frame}{6000 vrhova}
+\begin{center}
+\includegraphics[scale = 0.45]{3.png}\\
+Trajanje izvođenja: 1786.2 sekunde\\
+\end{center}
+\end{frame}
+
+\begin{frame}{8000 vrhova}
+\begin{center}
+\includegraphics[scale = 0.45]{4.png}\\
+Trajanje izvođenja: 4147.5 sekunde\\
+\end{center}
+\end{frame}
+
+\begin{frame}{10000 vrhova}
+\begin{center}
+\includegraphics[scale = 0.45]{5.png}\\
+Trajanje izvođenja: 8796.2 sekunde\\
+\end{center}
+\end{frame}
+
+\section{Zaključak}
+\begin{frame}{Zaključak}
+\begin{itemize}
+\item Genetski algoritam se pokazuje presporim i nedovoljno točnim za pristup ovom problemu.
+\item Imunološki algoritam nudi blago poboljšanje u odnosu na genetski u aspektu brzine i osjetno poboljšanje u aspektu točnosti.
+\item Mravlji algoritam vrlo brzo pronađe solidno rješenje, ali vrlo teško konvergira u točnije.
+\item Daleko najbolje rezultate daje modifikacija mravljeg algoritma koja vrlo brzo konvergira u najbolja pronađena rješenja.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Zaključak}
+Daljnja poboljšanja:
+\begin{itemize}
+\item Implementacija vlastite sparse strukture prilagođene potrebama naših algoritama.
+\item Paralelizacija algoritama.
+\item Eventualno bolje prilagođeni operatori križanja za genetski algoritam.
+\end{itemize}
+\end{frame}
+
+\section{Literatura}
+\begin{frame}{Literatura}
+\tiny
+\begin{enumerate}
+\item Darrell Whitley, Nam-Wook Yoo: Modeling Simple Genetic Algorithms for Permutation Problems, C.Sc. Department, Colorado State University
+\item David Gamarnik, Maxim Sviridenko: Hamiltonian Completions of Sparse Random Graphs, MIT, 2012.
+\item D. S. Franzblau, A.Raychaudhuri: Optimal Hamiltonian completions and path covers for trees, and a reduction to maximum flow; Department of Mathematics, CUNY, College of Staten Island, USA, 1999.
+\item \url{http://en.wikipedia.org/wiki/Hamiltonian_completion}
+\item Marko \v{C}upi\'{c}: Prirodom inspirirani optimizacijski algoritmi. Metaheuristike; FER, Sveu\v{c}ili\v{s}te u Zagrebu
+\item \url{http://math.nist.gov/MatrixMarket/mmio/matlab/mmiomatlab.html}
+
+\end{enumerate}
+
+\end{frame}
+
+
+\end{document}

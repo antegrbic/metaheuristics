@@ -1,0 +1,11 @@
+\beamer@endinputifotherversion {3.20pt}
+\select@language {croatian}
+\beamer@sectionintoc {1}{Uvod}{3}{0}{1}
+\beamer@sectionintoc {2}{Promatrane heuristike}{7}{0}{2}
+\beamer@subsectionintoc {2}{1}{Genetski algoritmi}{8}{0}{2}
+\beamer@subsectionintoc {2}{2}{Imunolo\IeC {\v s}ki algoritam}{11}{0}{2}
+\beamer@subsectionintoc {2}{3}{Mravlji algoritmi}{13}{0}{2}
+\beamer@sectionintoc {3}{Implementacija}{18}{0}{3}
+\beamer@sectionintoc {4}{Usporedba rezultata}{21}{0}{4}
+\beamer@sectionintoc {5}{Zaklju\IeC {\v c}ak}{43}{0}{5}
+\beamer@sectionintoc {6}{Literatura}{45}{0}{6}
