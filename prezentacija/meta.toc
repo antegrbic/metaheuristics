@@ -7,5 +7,4 @@
 \beamer@subsectionintoc {2}{3}{Mravlji algoritmi}{13}{0}{2}
 \beamer@sectionintoc {3}{Implementacija}{18}{0}{3}
 \beamer@sectionintoc {4}{Usporedba rezultata}{21}{0}{4}
-\beamer@sectionintoc {5}{Zaklju\IeC {\v c}ak}{43}{0}{5}
-\beamer@sectionintoc {6}{Literatura}{45}{0}{6}
+\beamer@sectionintoc {5}{Literatura}{37}{0}{5}

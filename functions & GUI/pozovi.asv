@@ -1,4 +1,0 @@
-m=load('100');
-for i=1:10
-    genetski (m,15000,32)
-end
