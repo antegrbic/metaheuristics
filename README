@@ -1,0 +1,4 @@
+A project for Metaheuristics Class at University of Zagreb - Faculty of Science.
+Hamiltonian completion problem - NP-hard problem which we solved with Genetic algorthm, an Ants algorithm, an Imunological algorithm and a greedy modification of Ants algorithm which by far gave the best results.
+
+Authors: Ante Grbić and Hermina Petric Maretić
